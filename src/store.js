@@ -52,7 +52,12 @@ module.exports = (function() {
 		storage = win[localStorageName]
 		store.set = function(key, val) {
 			if (val === undefined) { return store.remove(key) }
-			storage.setItem(key, store.serialize(val))
+			try {
+				storage.setItem(key, store.serialize(val))
+			} catch (e) {
+				//Some browsers are throwing errors on localStorage manipulation in private mode (ie: IOS)
+			}
+
 			return val
 		}
 		store.get = function(key, defaultVal) {
@@ -171,6 +176,6 @@ module.exports = (function() {
 		store.disabled = true
 	}
 	store.enabled = !store.disabled
-	
+
 	return store
 }())
